@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/tailwind.css">
+    <title>nav bar</title>
+    <script src="/js/toggleClasses.js"></script>
+  </head>
+
+  <body class="font-mono">
+    <%- include('./partials/navbar.ejs') %>
+
+    <div class="w-auto mx-2 mt-20 sm:mx-auto sm:w-1/2">
+      <form action="" class="grid shadow-2xl grid-flow-roe">
+        <span class="p-2 text-center bg-green-500">Sign Up</span>
+        <input type="text" name="username" id="username"
+          class="w-auto mx-2 mt-2 bg-transparent border-0 border-b-2 focus:ring-0 focus:outline-none"
+          placeholder="User Name">
+        <input type="email" name="email" id="email"
+          class="w-auto mx-2 mt-2 bg-transparent border-0 border-b-2 focus:ring-0 focus:outline-none"
+          placeholder="E-mail">
+        <input type="password" name="password" id="password"
+          class="w-auto mx-2 mt-2 bg-transparent border-0 border-b-2 focus:ring-0 focus:outline-none"
+          placeholder="Password" autocomplete>
+        <input type="password" name="repeatpassword" id="repeatpassword"
+          class="w-auto mx-2 mt-2 bg-transparent border-0 border-b-2 focus:ring-0 focus:outline-none"
+          placeholder="Repeat Password" autocomplete>
+        <div class="flex justify-between mt-2">
+          <button type="submit"
+            class="px-4 py-2 m-2 bg-gray-100 rounded-lg hover:bg-gray-200 focus:outline-none focus:ring focus:ring-gray-100">Cancel</button>
+          <button type="submit"
+            class="px-4 py-2 m-2 bg-green-500 rounded-full focus:outline-none place-self-end hover:bg-green-600 focus:ring focus:ring-green-500">Sign
+            up</button>
+        </div>
+        <span class="inline px-5 py-4 bg-purple-500 rounded-full justify-self-center max-w-min">OR</span>
+        <button
+          class="w-auto px-4 py-2 m-2 font-bold text-white bg-red-700 hover:bg-red-800 focus:outline-none focus:shadow-outline"
+          type="button">Login with Google</button>
+      </form>
+    </div>
+
+    <%- include('./partials/fontawesome.ejs') %>
+  </body>
