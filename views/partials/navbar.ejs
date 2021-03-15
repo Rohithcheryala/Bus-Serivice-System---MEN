@@ -1,8 +1,8 @@
 <nav class="relative flex justify-between font-mono text-lg bg-gray-300">
   <div class="flex">
     <div class="flex sm:hidden">
-      <button onfocusin="toggleDisplayOf('sidenav',['-translate-x-full', 'opacity-0', 'translate-x-0', 'opacity-1'])"
-        onfocusout="toggleDisplayOf('sidenav',['-translate-x-full', 'opacity-0', 'translate-x-0', 'opacity-1'])"
+      <button onfocusin="toggleClassesOf('sidenav',['-translate-x-full', 'opacity-0', 'translate-x-0', 'opacity-1'])"
+        onfocusout="toggleClassesOf('sidenav',['-translate-x-full', 'opacity-0', 'translate-x-0', 'opacity-1'])"
         class=" focus:outline-none focus:ring focus:ring-gray-800">
         <i class="self-center px-2 fas fa-bars fa-2x "></i>
       </button>
@@ -11,45 +11,59 @@
   </div>
 
   <div class="hidden sm:flex">
-    <a href="/"
+    <a href="<% if (locals.role) { %>/<%= locals.role %><% } %>/"
       class="self-center px-2 pt-3 pb-1 border-b-4 border-transparent hover:border-blue-400 hover:text-blue-400">
       Home
       <i class="fas fa-home"></i>
     </a>
-    <a href="/search"
+    <a href="<% if (locals.role) { %>/<%= locals.role %><% } %>/search"
       class="self-center px-2 pt-3 pb-1 border-b-4 border-transparent hover:border-blue-400 hover:text-blue-400">
       Search
       <i class="fas fa-search"></i>
     </a>
-    <a href="/contactus"
+    <a href="<% if (locals.role) { %>/<%= locals.role %><% } %>/contactus"
       class="self-center px-2 pt-3 pb-1 border-b-4 border-transparent hover:border-blue-400 hover:text-blue-400">
       Contact Us
       <i class="fas fa-phone-alt"></i>
     </a>
+    <% if (locals.role == 'admin') { %>
+    <a href="<% if (locals.role) { %>/<%= locals.role %><% } %>/addBus"
+      class="self-center px-2 pt-3 pb-1 border-b-4 border-transparent hover:border-blue-400 hover:text-blue-400">
+      Add Bus
+    </a>
+    <a href="<% if (locals.role) { %>/<%= locals.role %><% } %>/addTrip"
+      class="self-center px-2 pt-3 pb-1 border-b-4 border-transparent hover:border-blue-400 hover:text-blue-400">
+      Add Trip
+    </a>
+    <% } %>
   </div>
 
 
   <% if (locals.loggedIn) { %>
   <div class="flex">
-    <button onfocusin="toggleDisplayOf('userPanel',['opacity-0', 'opacity-1'])"
-      onfocusout="toggleDisplayOf('userPanel',['opacity-0', 'opacity-1'])"
+    <button onfocusin="toggleClassesOf('userPanel',['scale-100', 'scale-0'])"
+      onfocusout="toggleClassesOf('userPanel',['scale-100', 'scale-0'])"
       class="focus:outline-none focus:ring focus:ring-gray-800">
-      <i class="self-center px-2 fas fa-user-circle fa-2x "></i>
+      <i class="self-center px-2 fas fa-user-circle fa-2x " aria-hidden="true"></i>
     </button>
   </div>
 
 
-  <div class="absolute right-0 z-0 mt-2 mr-1 duration-300 bg-gray-100 border rounded-lg opacity-0 top-full"
+  <div
+    class="absolute right-0 z-0 mt-2 mr-1 transition-all duration-300 ease-in-out transform scale-0 bg-gray-100 border rounded-lg top-full"
     id='userPanel'>
-    <a href="/profile" class="self-center block p-2 hover:text-blue-400">
+    <a href="<% if (locals.role) { %>/<%= locals.role %><% } %>/profile"
+      class="self-center block p-2 hover:text-blue-400">
       Profile
       <i class="self-center px-2 fas fa-address-card"></i>
     </a>
-    <a href="/history" class="self-center block p-2 hover:text-blue-400">
+    <a href="<% if (locals.role) { %>/<%= locals.role %><% } %>/history"
+      class="self-center block p-2 hover:text-blue-400">
       History
       <i class="self-center px-2 fas fa-history"></i>
     </a>
-    <a href="/logout" class="self-center block p-2 hover:text-blue-400">
+    <a href="<% if (locals.role) { %>/<%= locals.role %><% } %>/logout"
+      class="self-center block p-2 hover:text-blue-400">
       Logout
       <i class="self-center px-2 fas fa-sign-out-alt"></i>
     </a>
@@ -71,21 +85,22 @@
   <div
     class="absolute duration-1000 transform -translate-x-full bg-gray-500 opacity-0 rounded-br-2xl h-96 w-52 top-full"
     id="sidenav">
-    <a href="/"
+    <a href="<% if (locals.role) { %>/<%= locals.role %><% } %>/"
       class="self-center block px-2 pt-3 pb-1 text-center border-b-4 border-transparent hover:border-blue-400 hover:text-blue-400">
       Home
       <i class="fas fa-home"></i>
     </a>
-    <a href="/search"
+    <a href="<% if (locals.role) { %>/<%= locals.role %><% } %>/search"
       class="self-center block px-2 pt-3 pb-1 text-center border-b-4 border-transparent hover:border-blue-400 hover:text-blue-400">
       Search
       <i class="fas fa-search"></i>
     </a>
-    <a href="/contactus"
+    <a href="<% if (locals.role) { %>/<%= locals.role %><% } %>/contactus"
       class="self-center block px-2 pt-3 pb-1 text-center border-b-4 border-transparent hover:border-blue-400 hover:text-blue-400">
       Contact Us
       <i class="fas fa-phone-alt"></i>
     </a>
+    <% if (!locals.loggedIn) { %>
     <a href="/signup"
       class="self-center block p-2 text-center border-b-4 border-transparent hover:border-blue-400 hover:text-blue-400">
       Sign Up
@@ -96,5 +111,16 @@
       Login
       <i class="fas fa-sign-in-alt"></i>
     </a>
+    <% } %>
+    <% if (locals.role == 'admin') { %>
+    <a href="/addBus"
+      class="self-center block p-2 text-center border-b-4 border-transparent hover:border-blue-400 hover:text-blue-400">
+      Add Bus
+    </a>
+    <a href="/addTrip"
+      class="self-center block p-2 text-center border-b-4 border-transparent hover:border-blue-400 hover:text-blue-400">
+      Add Trip
+    </a>
+    <% } %>
   </div>
 </nav>

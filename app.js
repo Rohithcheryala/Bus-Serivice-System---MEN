@@ -12,9 +12,13 @@ app.set('views', 'views');
 
 const mongo = require('./util/database.js');
 const index = require('./routes/index.js');
+const user = require('./routes/user.js');
+const admin = require('./routes/admin.js');
 
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', index);
+app.use('/user', user);
+app.use('/admin', admin);
 
 mongo.mongoConnect((err, client) => {
   if (err) throw err;

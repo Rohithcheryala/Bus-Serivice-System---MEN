@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/css/tailwind.css">
-    <title>nav bar</title>
+    <title><%= title %></title>
     <script src="/js/toggleClasses.js"></script>
   </head>
 
@@ -14,12 +14,12 @@
     <%- include('./partials/navbar.ejs') %>
 
     <div class="w-auto mx-2 mt-20 sm:mx-auto sm:w-1/2">
-      <form action="" class="grid shadow-2xl grid-flow-roe">
+      <form action="/signup" method="POST" class="grid shadow-2xl grid-flow-roe">
         <span class="p-2 text-center bg-green-500">Sign Up</span>
-        <input type="text" name="username" id="username"
-          class="w-auto mx-2 mt-2 bg-transparent border-0 border-b-2 focus:ring-0 focus:outline-none"
+        <input type="text" name="username" id="username" <% if (locals.username) { %> value="<%= locals.username %>"
+          <% } %> class="w-auto mx-2 mt-2 bg-transparent border-0 border-b-2 focus:ring-0 focus:outline-none"
           placeholder="User Name">
-        <input type="email" name="email" id="email"
+        <input type="email" name="email" id="email" <% if (locals.email) { %> value="<%= locals.email %>" <% } %>
           class="w-auto mx-2 mt-2 bg-transparent border-0 border-b-2 focus:ring-0 focus:outline-none"
           placeholder="E-mail">
         <input type="password" name="password" id="password"
