@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/tailwind.css">
+    <title><%= title %> </title>
+    <script src="/js/toggleClasses.js"></script>
+  </head>
+
+  <body class="font-mono">
+    <%- include('../partials/navbar.ejs') %>
+    <form action="/admin/addAdmin" method="POST">
+      <input type="text" class="" placeholder="username" id="username">
+      <input type="text" class="" placeholder="email" id="email">
+
+      <table>
+        <thead class="border-2 border-black">
+          <tr class="">
+            <th class="px-2 py-4 border-2 border-black">Username</th>
+            <th class="px-2 py-4 border-2 border-black">Email</th>
+            <th class="px-2 py-4 border-2 border-black"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% locals.allUsersArr.forEach((user) => { %>
+          <tr class="border-2 border-black">
+            <td class="px-2 py-4 text-center border-2 border-black"><%= user.username %></td>
+            <td class="px-2 py-4 text-center border-2 border-black"><%= user.email %></td>
+            <td class=""><button type="submit" class="px-2 py-4 text-center bg-purple-400">MAKE
+                ADMIN</button></td>
+          </tr>
+          <% }) %>
+        </tbody>
+
+      </table>
+    </form>
+
+
+    <% if (locals.data) { %>
+    <table class="">
+      <thead class="border-2 border-black">
+        <tr class="">
+          <th class="px-2 py-4 border-2 border-black">From Place</th>
+          <th class="px-2 py-4 border-2 border-black">From Date</th>
+          <th class="px-2 py-4 border-2 border-black">From Time</th>
+          <th class="px-2 py-4 border-2 border-black">To Place</th>
+          <th class="px-2 py-4 border-2 border-black">To Date</th>
+          <th class="px-2 py-4 border-2 border-black">To Time</th>
+          <th class="px-2 py-4 border-2 border-black"></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% locals.data.forEach((aTrip) => { %>
+        <tr class="border-2 border-black">
+          <td class="px-2 py-4 text-center border-2 border-black"><%= aTrip.from.place %></td>
+          <td class="px-2 py-4 text-center border-2 border-black"><%= aTrip.from.date %></td>
+          <td class="px-2 py-4 text-center border-2 border-black"><%= aTrip.from.time %></td>
+          <td class="px-2 py-4 text-center border-2 border-black"><%= aTrip.to.place %></td>
+          <td class="px-2 py-4 text-center border-2 border-black"><%= aTrip.to.date %></td>
+          <td class="px-2 py-4 text-center border-2 border-black"><%= aTrip.to.time %></td>
+          <td class="px-2 py-4 text-center border-2 border-black"><a
+              href="/<%=locals.role%>/book/<%=aTrip.busNo%>/<%=aTrip.id%>" class="p-2 bg-green-500">Book</a></td>
+        </tr>
+        <%}) %>
+      </tbody>
+    </table>
+    <% } %>
+
+    <%- include('../partials/fontawesome.ejs') %>
+  </body>
