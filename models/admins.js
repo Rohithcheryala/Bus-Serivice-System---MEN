@@ -15,11 +15,31 @@ class Admin {
   }
 
   static makeAdmin(userId) {
-    db.collection('users')
+    return db
+      .collection('users')
       .findOneAndDelete({ _id: mongodb.ObjectId(userId) })
       .then((user) => {
         // remove _id , it may cause troble
-        db.collection('admins').insertOne(user);
+        return db
+          .collection('admins')
+          .insertOne(user)
+          .then((user) => {
+            return;
+          });
+      });
+  }
+
+  static fetchAllUsers() {
+    const db = getDb();
+    return db
+      .collection('users')
+      .find({})
+      .toArray()
+      .then((allUsersArray) => {
+        return allUsersArray;
+      })
+      .catch((err) => {
+        console.log(`admin fetchAllUsers error: ${err}`);
       });
   }
 }
