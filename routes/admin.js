@@ -8,7 +8,9 @@ router.get('/', controller.get_index);
 
 router.get('/activities', controller.get_activities);
 
-router.get('/addAdmin', controller.get_addAdmin);
+router
+  .get('/addAdmin', controller.get_addAdmin)
+  .post('/addAdmin', controller.post_addAdmin);
 // router.use((req, res, next) => {
 //   res.redirect('/login');
 // });
