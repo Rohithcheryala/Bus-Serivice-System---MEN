@@ -15,17 +15,22 @@ class Admin {
   }
 
   static makeAdmin(userId) {
+    const db = getDb();
     return db
       .collection('users')
-      .findOneAndDelete({ _id: mongodb.ObjectId(userId) })
+      .findOneAndDelete({ _id: mongodb.ObjectId(`${userId}`) })
       .then((user) => {
         // remove _id , it may cause troble
-        return db
-          .collection('admins')
-          .insertOne(user)
-          .then((user) => {
-            return;
-          });
+        if (user.value) {
+          return db
+            .collection('admins')
+            .insertOne(user.value)
+            .then((user) => {
+              return;
+            });
+        } else {
+          return;
+        }
       });
   }
 
@@ -34,6 +39,7 @@ class Admin {
     return db
       .collection('users')
       .find({})
+      .sort({ username: 1 })
       .toArray()
       .then((allUsersArray) => {
         return allUsersArray;

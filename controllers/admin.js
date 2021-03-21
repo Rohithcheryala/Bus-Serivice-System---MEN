@@ -32,18 +32,26 @@ exports.get_addAdmin = (req, res, next) => {
 };
 
 exports.post_addAdmin = (req, res, next) => {
+  const Id = req.body.id;
+  console.log(Id);
+  // should parse the string as we added username and email an the id
+  const [userId, username, email] = Id.split('-');
+  console.log(`${userId}-${username}-${email}`);
   let promises = [];
-  promises
-    .push(Admin.fetchAllUsers().then((allUsersArr) => allUsersArr).cat)
-    .catch((err) => {
-      console.log(`admin post_addAdmin1 error: ${err}`);
-    });
   promises.push(
-    admin
-      .makeAdmin(userId)
-      .then()
+    Admin.fetchAllUsers()
+      .then((allUsersArr) => allUsersArr)
       .catch((err) => {
-        console.log(`admin post_addAdmin error: ${err}`);
+        console.log(`admin post_addAdmin1 error: ${err}`);
+      })
+  );
+  promises.push(
+    Admin.makeAdmin(userId)
+      .then(() => {
+        return;
+      })
+      .catch((err) => {
+        console.log(`admin post_addAdmin2 error: ${err}`);
       })
   );
 
@@ -52,13 +60,15 @@ exports.post_addAdmin = (req, res, next) => {
   // * indicating he is now an admin
   // * also want to fade-out this user after a time limit say 10sec
 
-  Promise.all(promises).then((resultsArr) => {});
-  Admin.makeAdmin(userId).then(() => {
+  Promise.all(promises).then((resultsArr) => {
     res.render('./admin/addAdmin.ejs', {
       title: 'Admin AddAdmin',
       loggedIn: true,
       role: 'admin',
-      allUsersArr: allUsersArr,
+      allUsersArr: resultsArr[0],
+      newAdminId: userId,
+      username: username,
+      email: email,
     });
   });
 };

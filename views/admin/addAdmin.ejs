@@ -6,68 +6,161 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/css/tailwind.css">
-    <title><%= title %> </title>
+    <title><%= title %></title>
     <script src="/js/toggleClasses.js"></script>
   </head>
 
   <body class="font-mono">
     <%- include('../partials/navbar.ejs') %>
-    <form action="/admin/addAdmin" method="POST">
-      <input type="text" class="" placeholder="username" id="username">
-      <input type="text" class="" placeholder="email" id="email">
+    <!-- <form action="/admin/admin/addAdmin"  method="POST"> -->
+    <input type="text" class="" placeholder="username" id="username" autocomplete="off" <% if (locals.username) { %>
+      value="<%= username %>" <% } %> onkeyup="searchUsers()">
+    <input type="text" class="" placeholder="email" id="email" autocomplete="off" <% if (locals.email) { %>
+      value="<%= email %>" <% } %> onkeyup="searchUsers()">
+    <button type="button" onclick="searchUsers()" class="p-2 bg-green-400 rounded-lg">Search</button>
 
-      <table>
-        <thead class="border-2 border-black">
-          <tr class="">
-            <th class="px-2 py-4 border-2 border-black">Username</th>
-            <th class="px-2 py-4 border-2 border-black">Email</th>
-            <th class="px-2 py-4 border-2 border-black"></th>
-          </tr>
-        </thead>
-        <tbody>
-          <% locals.allUsersArr.forEach((user) => { %>
-          <tr class="border-2 border-black">
-            <td class="px-2 py-4 text-center border-2 border-black"><%= user.username %></td>
-            <td class="px-2 py-4 text-center border-2 border-black"><%= user.email %></td>
-            <td class=""><button type="submit" class="px-2 py-4 text-center bg-purple-400">MAKE
-                ADMIN</button></td>
-          </tr>
-          <% }) %>
-        </tbody>
-
-      </table>
-    </form>
-
-
-    <% if (locals.data) { %>
-    <table class="">
-      <thead class="border-2 border-black">
+    <table class="w-auto">
+      <thead class="border-2 ">
         <tr class="">
-          <th class="px-2 py-4 border-2 border-black">From Place</th>
-          <th class="px-2 py-4 border-2 border-black">From Date</th>
-          <th class="px-2 py-4 border-2 border-black">From Time</th>
-          <th class="px-2 py-4 border-2 border-black">To Place</th>
-          <th class="px-2 py-4 border-2 border-black">To Date</th>
-          <th class="px-2 py-4 border-2 border-black">To Time</th>
-          <th class="px-2 py-4 border-2 border-black"></th>
+          <th class="px-2 py-4 border-2 border-black">Username</th>
+          <th class="px-2 py-4 border-2 border-black">Email</th>
+          <th class="w-[6.5rem] px-2 py-4 border-2 border-black"></th>
         </tr>
       </thead>
-      <tbody>
-        <% locals.data.forEach((aTrip) => { %>
-        <tr class="border-2 border-black">
-          <td class="px-2 py-4 text-center border-2 border-black"><%= aTrip.from.place %></td>
-          <td class="px-2 py-4 text-center border-2 border-black"><%= aTrip.from.date %></td>
-          <td class="px-2 py-4 text-center border-2 border-black"><%= aTrip.from.time %></td>
-          <td class="px-2 py-4 text-center border-2 border-black"><%= aTrip.to.place %></td>
-          <td class="px-2 py-4 text-center border-2 border-black"><%= aTrip.to.date %></td>
-          <td class="px-2 py-4 text-center border-2 border-black"><%= aTrip.to.time %></td>
-          <td class="px-2 py-4 text-center border-2 border-black"><a
-              href="/<%=locals.role%>/book/<%=aTrip.busNo%>/<%=aTrip.id%>" class="p-2 bg-green-500">Book</a></td>
-        </tr>
-        <%}) %>
+      <tbody id="tbody">
+
       </tbody>
     </table>
-    <% } %>
+    <!-- </form> -->
 
     <%- include('../partials/fontawesome.ejs') %>
+
+    <script>
+      const tbody = document.getElementById('tbody')
+      const isValidUsername = (user, username) => {
+        if (!username) {
+          return true
+        }
+        var regex = new RegExp(username, 'gi');
+        return user.username.match(regex);
+      }
+      const isValidEmail = (user, email) => {
+        if (!email) {
+          return true
+        }
+        var regex = new RegExp(email, 'gi');
+        return user.email.match(regex);
+      }
+
+      const searchUsers = (name = undefined, mail = undefined) => {
+        let username = document.getElementById('username').value || name;
+        const email = document.getElementById('email').value || mail;
+        // console.log(username, email);
+
+        const allUsersArr = JSON.parse('<%- JSON.stringify(locals.allUsersArr) %>')
+        let tablebody = "";
+        let i = 0;
+        if (!(username || email)) {
+          tablebody +=
+            `<tr class="">
+            <td colspan="3" class="">
+              <div class="text-center ">Enter Something...</div>
+            </td>
+          </tr>`;
+          tbody.innerHTML = tablebody;
+          return;
+        }
+        allUsersArr.forEach(user => {
+          // console.log(user);
+          i++;
+          if (isValidUsername(user, username) && isValidEmail(user, email)) {
+            tablebody +=
+              `<tr class="border-2 border-black">
+                <td class="px-2 py-4 text-center border-2 border-black">${ user.username } %></td>
+                <td class="px-2 py-4 text-center border-2 border-black">${ user.email } %></td>
+              `
+            if (user._id === '<% if (locals.newAdminId) { %><%= newAdminId %><% } %>') {
+              tablebody +=
+                `<td class="">
+                    <button type="button" class="block w-full px-2 py-4 text-center bg-purple-400">Done</button>
+                  </td>`;
+            } else {
+              tablebody +=
+                `<td class="">
+                <form action="/admin/addAdmin" onsubmit="return concatValue('id${i}', 'username', 'email');" method="POST">
+                <input type="hidden" name="id" id="id${i}" value="${user._id}">
+                <button type="submit" class="px-2 py-4 text-center bg-purple-400">MAKE ADMIN</button>
+                </form>
+              </td>
+              </tr>
+              `;
+            }
+
+          }
+        });
+        if (!tablebody) {
+          tablebody +=
+            `<tr class="">
+            <td colspan="3" class="">
+              <div class="text-center ">No match found</div>
+            </td>
+          </tr>`;
+        }
+        tbody.innerHTML = tablebody;
+      }
+
+      const concatValue = (a, b, c) => {
+        console.log('here');
+        const elem = document.getElementById(a);
+        const val1 = elem.value;
+        const val2 = document.getElementById(b).value;
+        const val3 = document.getElementById(c).value;
+        elem.value = [val1, val2, val3].join('-');
+        console.log(elem.value);
+        return true;
+      }
+
+    </script>
+    <% if (locals.newAdminId) { %>
+    <script>
+      searchUsers('<%= username %>', '<%= email %>')
+
+    </script>
+    <% } %>
+
+
+    <!-- <% if (locals.newAdminId) { %>
+    <script>
+      const allUsersArr = JSON.parse('<%- JSON.stringify(locals.allUsersArr) %>')
+      let tablebody = "";
+      let i = 0;
+      allUsersArr.forEach(user => {
+        i++;
+        tablebody +=
+          `<tr class="border-2 border-black">
+            <td class="px-2 py-4 text-center border-2 border-black">${ user.username } %></td>
+            <td class="px-2 py-4 text-center border-2 border-black">${ user.email } %></td>`;
+        if (user._id === '<%= newAdminId %>') {
+          tablebody +=
+            `<td class="">
+              <button type="button" class="block w-full px-2 py-4 text-center bg-purple-400">Done</button>
+            </td>`;
+        } else {
+          tablebody +=
+            `<td class="">
+              <form action="/admin/addAdmin" onsubmit="return concat()" method="POST">
+                <input type="hidden" name="id" value="${user._id}">
+                <button type="submit" class="px-2 py-4 text-center bg-purple-400">MAKE ADMIN</button>
+              </form>
+            </td>`;
+        }
+        tablebody +=
+          `</tr>
+          `;
+      });
+      tbody.innerHTML = tablebody;
+
+    </script>
+    <% } %> -->
+
   </body>

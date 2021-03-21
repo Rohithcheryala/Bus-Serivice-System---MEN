@@ -6,7 +6,7 @@
   "scripts": {
     "start": "npx nodemon app.js",
     "postcss-build": "cross-env TAILWIND_MODE=build postcss ./src/tailwind.css -o ./public/css/tailwind.css --verbose && ls -S -lh ./public/css/tailwind.css | awk '{print \"Size: \" $5}'",
-    "postcss-watch": "cross-env TAILWIND_MODE=watch postcss ./src/tailwind.css -o build.css --verbose --verbose -w",
+    "postcss-watch": "cross-env TAILWIND_MODE=watch postcss ./src/tailwind.css -o ./public/css/tailwind.css --verbose --verbose -w",
     "css-build": "tailwindcss build ./src/tailwind.css -o ./public/css/tailwind.css",
     "build": "postcss ./src/tailwind.css -o ./public/css/tailwind.css",
     "tw:prod": "cross-env NODE_ENV=production postcss build ./src/tailwind.css -o ./public/css/tailwind.css"

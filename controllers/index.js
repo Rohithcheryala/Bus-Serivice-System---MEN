@@ -4,7 +4,7 @@ const User = require('../models/users.js');
 const Admin = require('../models/admins.js');
 const { response } = require('express');
 exports.get_index = (req, res, next) => {
-  res.render('index.ejs', { loggedIn: true, role: 'admin' });
+  res.render('index.ejs');
 };
 
 exports.get_login = (req, res, next) => {
