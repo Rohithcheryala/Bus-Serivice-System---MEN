@@ -33,10 +33,8 @@ exports.get_addAdmin = (req, res, next) => {
 
 exports.post_addAdmin = (req, res, next) => {
   const Id = req.body.id;
-  console.log(Id);
   // should parse the string as we added username and email an the id
   const [userId, username, email] = Id.split('-');
-  console.log(`${userId}-${username}-${email}`);
   let promises = [];
   promises.push(
     Admin.fetchAllUsers()
@@ -59,7 +57,7 @@ exports.post_addAdmin = (req, res, next) => {
   // * i want to show the user with a tick mark
   // * indicating he is now an admin
   // * also want to fade-out this user after a time limit say 10sec
-
+  // ! i think its not necessary, its always done underhood
   Promise.all(promises).then((resultsArr) => {
     res.render('./admin/addAdmin.ejs', {
       title: 'Admin AddAdmin',

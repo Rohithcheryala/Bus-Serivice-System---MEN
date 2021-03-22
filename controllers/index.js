@@ -8,7 +8,7 @@ exports.get_index = (req, res, next) => {
 };
 
 exports.get_login = (req, res, next) => {
-  res.render('login.ejs', { loggedIn: false });
+  res.render('login.ejs', { loggedIn: false, title: 'login page' });
 };
 
 exports.post_login = (req, res, next) => {
@@ -51,7 +51,7 @@ exports.post_login = (req, res, next) => {
 };
 
 exports.get_signup = (req, res, next) => {
-  res.render('signup.ejs', { loggedIn: false });
+  res.render('signup.ejs', { loggedIn: false, title: 'signup page' });
 };
 
 exports.post_signup = (req, res, next) => {
@@ -84,7 +84,7 @@ exports.post_signup = (req, res, next) => {
                   });
               } else {
                 res.render('./login.ejs', {
-                  title: 'Log In P',
+                  title: 'signup Page',
                   username: username,
                   email: email,
                   err: true,

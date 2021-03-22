@@ -13,21 +13,22 @@
   <body class="font-mono">
     <%- include('../partials/navbar.ejs') %>
     <!-- <form action="/admin/admin/addAdmin"  method="POST"> -->
-    <input type="text" class="" placeholder="username" id="username" autocomplete="off" <% if (locals.username) { %>
+    <input type="text" class="m-2" placeholder="username" id="username" autocomplete="off" <% if (locals.username) { %>
       value="<%= username %>" <% } %> onkeyup="searchUsers()">
-    <input type="text" class="" placeholder="email" id="email" autocomplete="off" <% if (locals.email) { %>
+    <input type="text" class="m-2" placeholder="email" id="email" autocomplete="off" <% if (locals.email) { %>
       value="<%= email %>" <% } %> onkeyup="searchUsers()">
-    <button type="button" onclick="searchUsers()" class="p-2 bg-green-400 rounded-lg">Search</button>
+    <button type="button" onclick="searchUsers()"
+      class="p-2 m-4 bg-green-400 rounded-lg hover:bg-green-600">Search</button>
 
-    <table class="w-auto">
+    <table class="w-1/2 mx-auto table-fixed">
       <thead class="border-2 ">
         <tr class="">
           <th class="px-2 py-4 border-2 border-black">Username</th>
           <th class="px-2 py-4 border-2 border-black">Email</th>
-          <th class="w-[6.5rem] px-2 py-4 border-2 border-black"></th>
+          <th class="px-2 py-4 border-2 border-black w-28"></th>
         </tr>
       </thead>
-      <tbody id="tbody">
+      <tbody id="tbody" class="">
 
       </tbody>
     </table>
@@ -81,15 +82,15 @@
               `
             if (user._id === '<% if (locals.newAdminId) { %><%= newAdminId %><% } %>') {
               tablebody +=
-                `<td class="">
+                `<td class="bg-purple-400">
                     <button type="button" class="block w-full px-2 py-4 text-center bg-purple-400">Done</button>
                   </td>`;
             } else {
               tablebody +=
-                `<td class="">
+                `<td class="bg-purple-400">
                 <form action="/admin/addAdmin" onsubmit="return concatValue('id${i}', 'username', 'email');" method="POST">
                 <input type="hidden" name="id" id="id${i}" value="${user._id}">
-                <button type="submit" class="px-2 py-4 text-center bg-purple-400">MAKE ADMIN</button>
+                <button type="submit" class="w-full px-2 py-4 text-center bg-purple-400">MAKE ADMIN</button>
                 </form>
               </td>
               </tr>
@@ -123,7 +124,7 @@
     </script>
     <% if (locals.newAdminId) { %>
     <script>
-      searchUsers('<%= username %>', '<%= email %>')
+      searchUsers();
 
     </script>
     <% } %>
