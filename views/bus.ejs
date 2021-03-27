@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/tailwind.css">
+    <title><%= title %></title>
+    <script src="/js/toggleClasses.js"></script>
+  </head>
+
+  <body class="font-mono">
+    <%- include('./partials/navbar.ejs') %>
+    <form action="<%= role %>/book" method="POST" class="flex">
+      <div class="grid w-full grid-cols-4 mx-auto my-12 shadow-2xl sm:w-1/2 justify-items-center">
+        <% for( let seatno = 1; seatno <= 40; seatno++ ) { %>
+        <!-- if seat is booked add disabled tag to input field -->
+        <!-- and cursor-not-allowed class to label -->
+        <label for="<%= seatno %>" id='<%= seatno %>s'
+          class="relative block w-8 h-8 my-2 bg-purple-600 rounded-md cursor-pointer"
+          onclick="toggleClassesOf('<%= seatno %>s',['bg-purple-600','bg-green-600'])">
+          <span class="absolute block transform -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2"><%= seatno %></span>
+        </label>
+        <input type="checkbox" name="1" id="1" class="hidden">
+        <% } %>
+        <div class="col-span-full justify-self-end">
+          <button class="p-2 m-2 ease-in-out transform bg-green-400 rounded-md hover:scale-110">Book</button>
+        </div>
+      </div>
+    </form>
+    <%- include('./partials/fontawesome.ejs') %>
+  </body>

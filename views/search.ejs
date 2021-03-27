@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/tailwind.css">
+    <title><%=title %></title>
+    <script src="/js/toggleClasses.js"></script>
+  </head>
+
+  <body class="font-mono">
+    <%- include('./partials/navbar.ejs') %>
+    <form action="/<%= role %>/search" method="POST"
+      class="grid w-full grid-flow-row mx-auto border-2 border-blue-600 mt-14 md:w-1/2">
+      <div class="grid grid-flow-col grid-rows-2 gap-x-10">
+        <label for="fromplace" class="p-2">From</label>
+        <input type="text" name="fromplace" id="fromplace" class="mx-2">
+        <label for="toplace" class="p-2">To</label>
+        <input type="text" name="toplace" id="toplace" class="mx-2">
+      </div>
+      <label for="fromdate" class="p-2">Date</label>
+      <input type="date" name="fromdate" id="fromdate" class="mx-2">
+      <button type="submit"
+        class="px-4 py-2 mt-4 mb-2 ml-auto mr-2 bg-green-300 rounded hover:bg-green-500 max-w-max">Search</button>
+    </form>
+    <%- include('./partials/fontawesome.ejs') %>
+  </body>

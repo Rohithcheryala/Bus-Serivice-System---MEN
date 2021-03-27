@@ -6,6 +6,12 @@ const controller = require('../controllers/user.js');
 
 router.get('/', controller.get_index);
 
+router.get('/search', controller.get_search);
+
+router.get('/bus/:busNo', controller.get_bus);
+
+router.get('/book/:docId', controller.get_bookTickets);
+
 // router.use((req, res, next) => {
 //   res.redirect('/login');
 // });
