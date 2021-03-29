@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/tailwind.css">
+    <title><%= title %></title>
+    <script src="/js/toggleClasses.js"></script>
+    <script src="/js/hideAndShow.js"></script>
+  </head>
+
+  <body class="font-mono">
+    <%- include('../partials/navbar.ejs') %>
+    <form action="/admin/addTrip" method="POST">
+      <div class="flex items-center justify-center h-40 text-center bg-gray-500">
+        <div class="p-4 bg-gray-700 w-96">
+          <label for="busno" class="block py-2 sm:inline">Bus Number</label>
+          <input type="text" name="busno" id="busno" class="block mx-auto text-center sm:inline" required>
+        </div>
+      </div>
+      <div class="grid grid-flow-row grid-cols-1 sm:grid-flow-row gap-x-8 sm:grid-cols-2">
+        <div class="grid grid-flow-row p-4 border-2 border-purple-400 md:grid-cols-2 gap-y-1 md:gap-y-2">
+          <span class="text-3xl font-bold text-center col-span-full">From</span>
+          <label for="fromplace" class="py-2 md:text-center">Place</label>
+          <input type="text" name="fromplace" id="fromplace" oninput="fillValue('fromplace','first')" class="" required>
+          <label for="fromdate" class="py-2 md:text-center">Date</label>
+          <input type="date" name="fromdate" id="fromdate" class="" required>
+          <label for="fromtime" class="py-2 md:text-center">Time</label>
+          <input type="time" name="fromtime" id="fromtime" class="" required>
+        </div>
+        <div class="grid grid-flow-row p-4 border-2 border-purple-400 md:grid-cols-2 gap-y-1 md:gap-y-2">
+          <span class="text-3xl font-bold text-center col-span-full">To</span>
+          <label for="toplace" class="py-2 md:text-center">Place</label>
+          <input type="text" name="toplace" id="toplace" oninput="fillValue('toplace','last')" class="" required>
+          <label for="todate" class="py-2 md:text-center">Date</label>
+          <input type="date" name="todate" id="todate" class="" required>
+          <label for="totime" class="py-2 md:text-center">Time</label>
+          <input type="time" name="totime" id="totime" class="" required>
+        </div>
+        <div class="flex flex-wrap pt-4 col-span-full">
+          <span class="block w-full text-lg font-medium text-center">Stops In Between</span>
+          <input type="text" id='first' name='first' oninput="fillValue('first','fromplace')" class="m-4">
+          <input type="text" id='stop1' name='stop1' oninput="func('stop1','stop2', 'inline')" class="m-4">
+          <input type="text" id='stop2' name='stop2' oninput="func('stop2','stop3', 'inline')" class='hidden m-4'>
+          <input type="text" id='stop3' name='stop3' oninput="func('stop3','stop4', 'inline')" class='hidden m-4'>
+          <input type="text" id='stop4' name='stop4' oninput="func('stop4','stop5', 'inline')" class='hidden m-4'>
+          <input type="text" id='stop5' name='stop5' class='hidden m-4'>
+          <input type="text" id='last' name='last' oninput="fillValue('last','toplace')" class="m-4">
+        </div>
+
+        <div class="mx-auto mt-2 max-w-min col-span-full">
+          <button type="submit" class="px-16 py-4 bg-red-400 rounded-2xl">ADD</button>
+        </div>
+      </div>
+    </form>
+    <script>
+      function func(thiss, id, disp) {
+        let elem = document.getElementById(thiss);
+        if (!elem.value) {
+          let target = document.getElementById(id);
+          if (!target) {
+            return;
+          }
+          if (target.value) {
+            elem.value = target.value;
+            target.value = '';
+            func(id, 'stop' + ((+id.slice(-1)) + 1), disp);
+          }
+          if (!elem.value && !target.value) {
+            hide(id);
+          }
+        } else {
+          show(id, disp);
+        }
+        return true
+      }
+
+      function fillValue(host, target) {
+        document.getElementById(target).value = document.getElementById(host).value;
+      }
+
+    </script>
+
+    <%- include('../partials/fontawesome.ejs') %>
+
+  </body>
