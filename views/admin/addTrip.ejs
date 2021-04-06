@@ -10,44 +10,243 @@
     <script src="/js/toggleClasses.js"></script>
     <script src="/js/hideAndShow.js"></script>
   </head>
+  <%
+  let names = [], Allstops = [];
+  locals.routes.forEach(route=>{
+  names.push(route.name)
+  Allstops.push(route.stopsArr)
+  })
+  %>
 
   <body class="font-mono">
     <%- include('../partials/navbar.ejs') %>
     <form action="/admin/addTrip" method="POST">
-      <div class="flex items-center justify-center h-40 text-center bg-gray-500">
-        <div class="p-4 bg-gray-700 w-96">
+      <div class="flex items-center justify-center text-center bg-gray-500 max-h-64">
+        <div class="p-4 space-y-4 bg-gray-700 w-96">
           <label for="busno" class="block py-2 sm:inline">Bus Number</label>
           <input type="text" name="busno" id="busno" class="block mx-auto text-center sm:inline" required>
+          <label for="route" class="block py-2 sm:inline">Route</label>
+          <input type="text" name="route" id="route" list="names" class="block mx-auto text-center sm:inline"
+            onkeyup="updateStops() && updateStopsList() && enableAllStops()" required>
+          <datalist id="names">
+            <% names.forEach(name => { %>
+            <option value="<%= name %>">
+              <%}) %>
+          </datalist>
         </div>
       </div>
       <div class="grid grid-flow-row grid-cols-1 sm:grid-flow-row gap-x-8 sm:grid-cols-2">
         <div class="grid grid-flow-row p-4 border-2 border-purple-400 md:grid-cols-2 gap-y-1 md:gap-y-2">
           <span class="text-3xl font-bold text-center col-span-full">From</span>
           <label for="fromplace" class="py-2 md:text-center">Place</label>
-          <input type="text" name="fromplace" id="fromplace" oninput="fillValue('fromplace','first')" class="" required>
-          <label for="fromdate" class="py-2 md:text-center">Date</label>
+          <input type="text" name="fromplace" id="fromplace" oninput="Helper('fromplace','toplace')" class=""
+            list="stopsList" required>
+          <!-- <label for="fromdate" class="py-2 md:text-center">Date</label>
           <input type="date" name="fromdate" id="fromdate" class="" required>
           <label for="fromtime" class="py-2 md:text-center">Time</label>
-          <input type="time" name="fromtime" id="fromtime" class="" required>
+          <input type="time" name="fromtime" id="fromtime" class="" required> -->
         </div>
         <div class="grid grid-flow-row p-4 border-2 border-purple-400 md:grid-cols-2 gap-y-1 md:gap-y-2">
           <span class="text-3xl font-bold text-center col-span-full">To</span>
           <label for="toplace" class="py-2 md:text-center">Place</label>
-          <input type="text" name="toplace" id="toplace" oninput="fillValue('toplace','last')" class="" required>
-          <label for="todate" class="py-2 md:text-center">Date</label>
+          <input type="text" name="toplace" id="toplace" oninput="Helper('fromplace','toplace')" class=""
+            list="stopsList" required>
+          <!-- <label for="todate" class="py-2 md:text-center">Date</label>
           <input type="date" name="todate" id="todate" class="" required>
           <label for="totime" class="py-2 md:text-center">Time</label>
-          <input type="time" name="totime" id="totime" class="" required>
+          <input type="time" name="totime" id="totime" class="" required> -->
         </div>
-        <div class="flex flex-wrap pt-4 col-span-full">
-          <span class="block w-full text-lg font-medium text-center">Stops In Between</span>
-          <input type="text" id='first' name='first' oninput="fillValue('first','fromplace')" class="m-4">
-          <input type="text" id='stop1' name='stop1' oninput="func('stop1','stop2', 'inline')" class="m-4">
-          <input type="text" id='stop2' name='stop2' oninput="func('stop2','stop3', 'inline')" class='hidden m-4'>
-          <input type="text" id='stop3' name='stop3' oninput="func('stop3','stop4', 'inline')" class='hidden m-4'>
-          <input type="text" id='stop4' name='stop4' oninput="func('stop4','stop5', 'inline')" class='hidden m-4'>
-          <input type="text" id='stop5' name='stop5' class='hidden m-4'>
-          <input type="text" id='last' name='last' oninput="fillValue('last','toplace')" class="m-4">
+        <datalist class="" id="stopsList">
+          <!-- content comes here -->
+        </datalist>
+
+        <div class="pt-4 col-span-full" id="stops">
+          <!-- content comes here -->
+          <!-- <div class="pt-4 col-span-full" id="stops"> -->
+          <div class="hidden m-4 bg-gray-200 border-2 border-green-400" id="firstparent">
+            <div class="mx-auto w-96">
+              <span class="w-full text-lg font-medium text-center">First</span>
+              <input type="text" id="first" name="first" class="m-4" readonly="">
+            </div>
+            <div>
+              <div class="grid grid-flow-row grid-cols-1 sm:grid-flow-row gap-x-8 sm:grid-cols-2">
+                <div class="grid grid-flow-row p-4 border-2 border-purple-400 md:grid-cols-2 gap-y-1 md:gap-y-2">
+                  <span class="text-3xl font-bold text-center col-span-full">Arrival</span>
+                  <label for="dpdatefirst" class="py-2 md:text-center">Date</label>
+                  <input type="date" id="dpdatefirst" name="dpdatefirst" class="">
+                  <label for="dptimefirst" class="py-2 md:text-center">Time</label>
+                  <input type="time" id="dptimefirst" name="dptimefirst" class="">
+                </div>
+                <div class="grid grid-flow-row p-4 border-2 border-purple-400 md:grid-cols-2 gap-y-1 md:gap-y-2">
+                  <span class="text-3xl font-bold text-center col-span-full">Departure</span>
+                  <label for="ardatefirst" class="py-2 md:text-center">Date</label>
+                  <input type="date" id="ardatefirst" name="ardatefirst" class="">
+                  <label for="artimefirst" class="py-2 md:text-center">Time</label>
+                  <input type="time" id="artimefirst" name="artimefirst" class="">
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="hidden m-4 bg-gray-200 border-2 border-green-400" id="stop1parent">
+            <div class="mx-auto w-96">
+              <span class="w-full text-lg font-medium text-center">Stop 1</span>
+              <input type="text" id="stop1" name="stop1" class="m-4" readonly="">
+              <button type="button" onclick="Helper2('stop1','fromplace','toplace')">
+                <i class="text-2xl fas hover:text-red-800 fa-times"></i>
+              </button>
+            </div>
+            <div>
+              <div class="grid grid-flow-row grid-cols-1 sm:grid-flow-row gap-x-8 sm:grid-cols-2">
+                <div class="grid grid-flow-row p-4 border-2 border-purple-400 md:grid-cols-2 gap-y-1 md:gap-y-2">
+                  <span class="text-3xl font-bold text-center col-span-full">Arrival</span>
+                  <label for="dpdatestop1" class="py-2 md:text-center">Date</label>
+                  <input type="date" id="dpdatestop1" name="dpdatestop1" class="">
+                  <label for="dptimestop1" class="py-2 md:text-center">Time</label>
+                  <input type="time" id="dptimestop1" name="dptimestop1" class="">
+                </div>
+                <div class="grid grid-flow-row p-4 border-2 border-purple-400 md:grid-cols-2 gap-y-1 md:gap-y-2">
+                  <span class="text-3xl font-bold text-center col-span-full">Departure</span>
+                  <label for="ardatestop1" class="py-2 md:text-center">Date</label>
+                  <input type="date" id="ardatestop1" name="ardatestop1" class="">
+                  <label for="artimestop1" class="py-2 md:text-center">Time</label>
+                  <input type="time" id="artimestop1" name="artimestop1" class="">
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="hidden m-4 bg-gray-200 border-2 border-green-400" id="stop2parent">
+            <div class="mx-auto w-96">
+              <span class="w-full text-lg font-medium text-center">Stop 2</span>
+              <input type="text" id="stop2" name="stop2" class="m-4" readonly="">
+              <button type="button" onclick="Helper2('stop2','fromplace','toplace')">
+                <i class="text-2xl fas hover:text-red-800 fa-times"></i>
+              </button>
+            </div>
+            <div>
+              <div class="grid grid-flow-row grid-cols-1 sm:grid-flow-row gap-x-8 sm:grid-cols-2">
+                <div class="grid grid-flow-row p-4 border-2 border-purple-400 md:grid-cols-2 gap-y-1 md:gap-y-2">
+                  <span class="text-3xl font-bold text-center col-span-full">Arrival</span>
+                  <label for="dpdatestop2" class="py-2 md:text-center">Date</label>
+                  <input type="date" id="dpdatestop2" name="dpdatestop2" class="">
+                  <label for="dptimestop2" class="py-2 md:text-center">Time</label>
+                  <input type="time" id="dptimestop2" name="dptimestop2" class="">
+                </div>
+                <div class="grid grid-flow-row p-4 border-2 border-purple-400 md:grid-cols-2 gap-y-1 md:gap-y-2">
+                  <span class="text-3xl font-bold text-center col-span-full">Departure</span>
+                  <label for="ardatestop2" class="py-2 md:text-center">Date</label>
+                  <input type="date" id="ardatestop2" name="ardatestop2" class="">
+                  <label for="artimestop2" class="py-2 md:text-center">Time</label>
+                  <input type="time" id="artimestop2" name="artimestop2" class="">
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="hidden m-4 bg-gray-200 border-2 border-green-400" id="stop3parent">
+            <div class="mx-auto w-96">
+              <span class="w-full text-lg font-medium text-center">Stop 3</span>
+              <input type="text" id="stop3" name="stop3" class="m-4" readonly="">
+              <button type="button" onclick="Helper2('stop3','fromplace','toplace')">
+                <i class="text-2xl fas hover:text-red-800 fa-times"></i>
+              </button>
+            </div>
+            <div>
+              <div class="grid grid-flow-row grid-cols-1 sm:grid-flow-row gap-x-8 sm:grid-cols-2">
+                <div class="grid grid-flow-row p-4 border-2 border-purple-400 md:grid-cols-2 gap-y-1 md:gap-y-2">
+                  <span class="text-3xl font-bold text-center col-span-full">Arrival</span>
+                  <label for="dpdatestop3" class="py-2 md:text-center">Date</label>
+                  <input type="date" id="dpdatestop3" name="dpdatestop3" class="">
+                  <label for="dptimestop3" class="py-2 md:text-center">Time</label>
+                  <input type="time" id="dptimestop3" name="dptimestop3" class="">
+                </div>
+                <div class="grid grid-flow-row p-4 border-2 border-purple-400 md:grid-cols-2 gap-y-1 md:gap-y-2">
+                  <span class="text-3xl font-bold text-center col-span-full">Departure</span>
+                  <label for="ardatestop3" class="py-2 md:text-center">Date</label>
+                  <input type="date" id="ardatestop3" name="ardatestop3" class="">
+                  <label for="artimestop3" class="py-2 md:text-center">Time</label>
+                  <input type="time" id="artimestop3" name="artimestop3" class="">
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="hidden m-4 bg-gray-200 border-2 border-green-400" id="stop4parent">
+            <div class="mx-auto w-96">
+              <span class="w-full text-lg font-medium text-center">Stop 4</span>
+              <input type="text" id="stop4" name="stop4" class="m-4" readonly="">
+              <button type="button" onclick="Helper2('stop4','fromplace','toplace')">
+                <i class="text-2xl fas hover:text-red-800 fa-times"></i>
+              </button>
+            </div>
+            <div>
+              <div class="grid grid-flow-row grid-cols-1 sm:grid-flow-row gap-x-8 sm:grid-cols-2">
+                <div class="grid grid-flow-row p-4 border-2 border-purple-400 md:grid-cols-2 gap-y-1 md:gap-y-2">
+                  <span class="text-3xl font-bold text-center col-span-full">Arrival</span>
+                  <label for="dpdatestop4" class="py-2 md:text-center">Date</label>
+                  <input type="date" id="dpdatestop4" name="dpdatestop4" class="">
+                  <label for="dptimestop4" class="py-2 md:text-center">Time</label>
+                  <input type="time" id="dptimestop4" name="dptimestop4" class="">
+                </div>
+                <div class="grid grid-flow-row p-4 border-2 border-purple-400 md:grid-cols-2 gap-y-1 md:gap-y-2">
+                  <span class="text-3xl font-bold text-center col-span-full">Departure</span>
+                  <label for="ardatestop4" class="py-2 md:text-center">Date</label>
+                  <input type="date" id="ardatestop4" name="ardatestop4" class="">
+                  <label for="artimestop4" class="py-2 md:text-center">Time</label>
+                  <input type="time" id="artimestop4" name="artimestop4" class="">
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="hidden m-4 bg-gray-200 border-2 border-green-400" id="stop5parent">
+            <div class="mx-auto w-96">
+              <span class="w-full text-lg font-medium text-center">Stop 5</span>
+              <input type="text" id="stop5" name="stop5" class="m-4" readonly="">
+              <button type="button" onclick="Helper2('stop5','fromplace','toplace')">
+                <i class="text-2xl fas hover:text-red-800 fa-times"></i>
+              </button>
+            </div>
+            <div>
+              <div class="grid grid-flow-row grid-cols-1 sm:grid-flow-row gap-x-8 sm:grid-cols-2">
+                <div class="grid grid-flow-row p-4 border-2 border-purple-400 md:grid-cols-2 gap-y-1 md:gap-y-2">
+                  <span class="text-3xl font-bold text-center col-span-full">Arrival</span>
+                  <label for="dpdatestop5" class="py-2 md:text-center">Date</label>
+                  <input type="date" id="dpdatestop5" name="dpdatestop5" class="">
+                  <label for="dptimestop5" class="py-2 md:text-center">Time</label>
+                  <input type="time" id="dptimestop5" name="dptimestop5" class="">
+                </div>
+                <div class="grid grid-flow-row p-4 border-2 border-purple-400 md:grid-cols-2 gap-y-1 md:gap-y-2">
+                  <span class="text-3xl font-bold text-center col-span-full">Departure</span>
+                  <label for="ardatestop5" class="py-2 md:text-center">Date</label>
+                  <input type="date" id="ardatestop5" name="ardatestop5" class="">
+                  <label for="artimestop5" class="py-2 md:text-center">Time</label>
+                  <input type="time" id="artimestop5" name="artimestop5" class="">
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="hidden m-4 bg-gray-200 border-2 border-green-400" id="lastparent">
+            <div class="mx-auto w-96">
+              <span class="w-full text-lg font-medium text-center">Last</span>
+              <input type="text" id="last" name="last" class="m-4" readonly="">
+            </div>
+            <div>
+              <div class="grid grid-flow-row grid-cols-1 sm:grid-flow-row gap-x-8 sm:grid-cols-2">
+                <div class="grid grid-flow-row p-4 border-2 border-purple-400 md:grid-cols-2 gap-y-1 md:gap-y-2">
+                  <span class="text-3xl font-bold text-center col-span-full">Arrival</span>
+                  <label for="dpdatelast" class="py-2 md:text-center">Date</label>
+                  <input type="date" id="dpdatelast" name="dpdatelast" class="">
+                  <label for="dptimelast" class="py-2 md:text-center">Time</label>
+                  <input type="time" id="dptimelast" name="dptimelast" class="">
+                </div>
+                <div class="grid grid-flow-row p-4 border-2 border-purple-400 md:grid-cols-2 gap-y-1 md:gap-y-2">
+                  <span class="text-3xl font-bold text-center col-span-full">Departure</span>
+                  <label for="ardatelast" class="py-2 md:text-center">Date</label>
+                  <input type="date" id="ardatelast" name="ardatelast" class="">
+                  <label for="artimelast" class="py-2 md:text-center">Time</label>
+                  <input type="time" id="artimelast" name="artimelast" class="">
+                </div>
+              </div>
+            </div>
+            <!-- </div> -->
+          </div>
         </div>
 
         <div class="mx-auto mt-2 max-w-min col-span-full">
@@ -55,7 +254,96 @@
         </div>
       </div>
     </form>
+
     <script>
+      const names = JSON.parse('<%- JSON.stringify(names) %>');
+      const Allstops = JSON.parse('<%- JSON.stringify(Allstops) %>');
+      let disabledStops = [];
+
+      const enableAllStops = () => {
+        disabledStops = [];
+      }
+
+      const disableStop = (id) => {
+        disabledStops.push(document.getElementById(id).value);
+        // console.log(disabledStops);
+      }
+
+      const updateStopsList = () => {
+        const host = document.getElementById('route')
+        const target = document.getElementById('stopsList')
+        let text = ''
+        if (names.includes(host.value)) {
+          const stops = Allstops[names.indexOf(host.value)]
+          for (let i = 0; i < stops.length; i++) {
+            text +=
+              `<option value="${stops[i]}">`
+          }
+          target.innerHTML = text;
+        }
+        return true
+      }
+
+      const updateStops = (first = null, last = null) => {
+        const host = document.getElementById('route');
+        const First = document.getElementById('first');
+        const Stop1 = document.getElementById('stop1');
+        const Stop2 = document.getElementById('stop2');
+        const Stop3 = document.getElementById('stop3');
+        const Stop4 = document.getElementById('stop4');
+        const Stop5 = document.getElementById('stop5');
+        const Last = document.getElementById('last');
+        ['first', 'stop1', 'stop2', 'stop3', 'stop4', 'stop5', 'last'].forEach(id => {
+          hide(id + 'parent');
+          document.getElementById(id).value = ''
+        })
+        if (names.includes(host.value)) {
+          const stops = Allstops[names.indexOf(host.value)]
+          if (!first) {
+            first = 0
+          } else {
+            if (!stops.includes(first)) return
+            first = stops.indexOf(first)
+          }
+          if (!last) {
+            last = stops.length - 1
+          } else {
+            if (!stops.includes(last)) return
+            last = stops.indexOf(last)
+          }
+          let j = 0;
+          for (let i = 0; i < stops.length; i++) {
+            if (i >= first && i <= last) {
+              if (disabledStops.includes(stops[i])) continue;
+              if (i == first) name = 'First';
+              else if (i == last) name = 'Last';
+              else name = `Stop${j}`;
+              eval(name).value = stops[i];
+              show(name.toLowerCase() + 'parent');
+              j++;
+            }
+          }
+        }
+        return true;
+      }
+
+      const Helper = (from, to) => {
+        return updateStops(document.getElementById(from).value, document.getElementById(to).value)
+      }
+
+      const Helper2 = (id, from, to) => {
+        disableStop(id);
+        // hide(id + 'parent');
+        updateStops(document.getElementById(from).value, document.getElementById(to).value);
+        // ['first', 'stop1', 'stop2', 'stop3', 'stop4', 'stop5', 'last'].forEach(id => {
+        //   console.log(document.getElementById(id).value);
+        // })
+      }
+
+    </script>
+
+    <%- include('../partials/fontawesome.ejs') %>
+    <!-- <script>
       function func(thiss, id, disp) {
         let elem = document.getElementById(thiss);
         if (!elem.value) {
@@ -81,8 +369,5 @@
         document.getElementById(target).value = document.getElementById(host).value;
       }
 
-    </script>
-
-    <%- include('../partials/fontawesome.ejs') %>
-
+    </script> -->
   </body>

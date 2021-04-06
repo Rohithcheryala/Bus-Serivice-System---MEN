@@ -1,11 +1,20 @@
 const Admin = require('../models/admins.js');
-const Bus = require('../models/bus.js');
+const { Bus, Trip } = require('../models/bus.js');
+const { Map, Route } = require('../models/routes.js');
 
 exports.get_index = (req, res, next) => {
   res.render('./admin/index.ejs', {
     title: 'Admin index',
     loggedIn: true,
     role: 'admin',
+  });
+};
+
+exports.get_search = (req, res, next) => {
+  res.render('../views/search.ejs', {
+    title: 'search page',
+    role: 'user',
+    loggedIn: true,
   });
 };
 
@@ -72,62 +81,139 @@ exports.post_addAdmin = (req, res, next) => {
   });
 };
 
-exports.get_addBus = (req, res, next) => {
-  res.render('../views/admin/addBus.ejs', {
-    title: 'Add Bus',
+exports.get_addRoute = (req, res, next) => {
+  res.render('./admin/addRoute.ejs', {
+    title: 'Admin AddRoute',
     loggedIn: true,
     role: 'admin',
+  });
+};
+
+exports.post_addRoute = (req, res, next) => {
+  const { name, from, stop1, stop2, stop3, stop4, stop5, to } = req.body;
+  const route = new Route(name, [from, stop1, stop2, stop3, stop4, stop5, to]);
+  Map.addRoute(route)
+    .then(() => {
+      res.render('./admin/addRoute.ejs', {
+        title: 'Admin AddRoute',
+        loggedIn: true,
+        role: 'admin',
+      });
+    })
+    .catch((err) => {
+      console.log(`admin post_addRoute err ${err}`);
+    });
+};
+
+exports.get_addBus = (req, res, next) => {
+  Map.fetchAllRoutes().then((routesArray) => {
+    res.render('../views/admin/addBus.ejs', {
+      title: 'Add Bus',
+      loggedIn: true,
+      role: 'admin',
+      routes: routesArray,
+    });
   });
 };
 
 exports.post_addBus = (req, res, next) => {
   const {
     busno,
+    route,
     fromplace,
-    fromdate,
-    fromtime,
     toplace,
-    todate,
-    totime,
     first,
+    ardatefirst,
+    artimefirst,
+    dpdatefirst,
+    dptimefirst,
     stop1,
+    ardatestop1,
+    artimestop1,
+    dpdatestop1,
+    dptimestop1,
     stop2,
+    ardatestop2,
+    artimestop2,
+    dpdatestop2,
+    dptimestop2,
     stop3,
+    ardatestop3,
+    artimestop3,
+    dpdatestop3,
+    dptimestop3,
     stop4,
+    ardatestop4,
+    artimestop4,
+    dpdatestop4,
+    dptimestop4,
     stop5,
+    ardatestop5,
+    artimestop5,
+    dpdatestop5,
+    dptimestop5,
     last,
+    ardatelast,
+    artimelast,
+    dpdatelast,
+    dptimelast,
   } = req.body;
   // if a collection with name busno already exists, show err
   Bus.isNewBusno(busno).then((bool) => {
     if (!bool) {
       res.send('errrrrrrr');
     } else {
-      let stops = [first];
-      for (let i = 1; i <= 5; i++) {
-        if (eval(`stop${i}`)) {
-          stops.push(eval(`stop${i}`));
-        }
-      }
-      stops.push(last);
-      let trip = new Bus(
+      let trip = new Trip(
+        route,
         fromplace,
-        fromdate,
-        fromtime,
         toplace,
-        todate,
-        totime,
-        stops
+        first,
+        ardatefirst,
+        artimefirst,
+        dpdatefirst,
+        dptimefirst,
+        stop1,
+        ardatestop1,
+        artimestop1,
+        dpdatestop1,
+        dptimestop1,
+        stop2,
+        ardatestop2,
+        artimestop2,
+        dpdatestop2,
+        dptimestop2,
+        stop3,
+        ardatestop3,
+        artimestop3,
+        dpdatestop3,
+        dptimestop3,
+        stop4,
+        ardatestop4,
+        artimestop4,
+        dpdatestop4,
+        dptimestop4,
+        stop5,
+        ardatestop5,
+        artimestop5,
+        dpdatestop5,
+        dptimestop5,
+        last,
+        ardatelast,
+        artimelast,
+        dpdatelast,
+        dptimelast
       );
-      const response = Bus.validateTrip(trip);
+      const response = trip.validate();
       if (!response.error) {
         Bus.addTrip(busno, trip)
           .then(() => {
-            res.render('../views/admin/addBus.ejs', {
-              title: 'Add Bus',
-              loggedIn: true,
-              role: 'admin',
-              successMsg: true,
-            });
+            res.send('success');
+            // res.render('../views/admin/addBus.ejs', {
+            //   title: 'Add Bus',
+            //   loggedIn: true,
+            //   role: 'admin',
+            //   successMsg: true,
+            // });
           })
           .catch((err) => {
             console.log(`admin post_addTrip error: ${err}`);
@@ -138,61 +224,122 @@ exports.post_addBus = (req, res, next) => {
 };
 
 exports.get_addTrip = (req, res, next) => {
-  res.render('../views/admin/addTrip.ejs', {
-    title: 'Add Bus',
-    loggedIn: true,
-    role: 'admin',
+  Map.fetchAllRoutes().then((routesArray) => {
+    res.render('../views/admin/addTrip.ejs', {
+      title: 'Add Trip',
+      loggedIn: true,
+      role: 'admin',
+      routes: routesArray,
+    });
   });
 };
 
 exports.post_addTrip = (req, res, next) => {
   const {
     busno,
+    route,
     fromplace,
-    fromdate,
-    fromtime,
     toplace,
-    todate,
-    totime,
     first,
+    ardatefirst,
+    artimefirst,
+    dpdatefirst,
+    dptimefirst,
     stop1,
+    ardatestop1,
+    artimestop1,
+    dpdatestop1,
+    dptimestop1,
     stop2,
+    ardatestop2,
+    artimestop2,
+    dpdatestop2,
+    dptimestop2,
     stop3,
+    ardatestop3,
+    artimestop3,
+    dpdatestop3,
+    dptimestop3,
     stop4,
+    ardatestop4,
+    artimestop4,
+    dpdatestop4,
+    dptimestop4,
     stop5,
+    ardatestop5,
+    artimestop5,
+    dpdatestop5,
+    dptimestop5,
     last,
+    ardatelast,
+    artimelast,
+    dpdatelast,
+    dptimelast,
   } = req.body;
   // if a collection with name busno doesnot exists, show err
   Bus.isNewBusno(busno).then((bool) => {
+    console.log(busno, bool);
     if (bool) {
       res.send('errrrrrrr');
     } else {
-      let stops = [first];
-      for (let i = 1; i <= 5; i++) {
-        if (eval(`stop${i}`)) {
-          stops.push(eval(`stop${i}`));
-        }
-      }
-      stops.push(last);
-      let trip = new Bus(
+      // let stops = [first];
+      // for (let i = 1; i <= 5; i++) {
+      //   if (eval(`stop${i}`)) {
+      //     stops.push(eval(`stop${i}`));
+      //   }
+      // }
+      // stops.push(last);
+      let trip = new Trip(
+        route,
         fromplace,
-        fromdate,
-        fromtime,
         toplace,
-        todate,
-        totime,
-        stops
+        first,
+        ardatefirst,
+        artimefirst,
+        dpdatefirst,
+        dptimefirst,
+        stop1,
+        ardatestop1,
+        artimestop1,
+        dpdatestop1,
+        dptimestop1,
+        stop2,
+        ardatestop2,
+        artimestop2,
+        dpdatestop2,
+        dptimestop2,
+        stop3,
+        ardatestop3,
+        artimestop3,
+        dpdatestop3,
+        dptimestop3,
+        stop4,
+        ardatestop4,
+        artimestop4,
+        dpdatestop4,
+        dptimestop4,
+        stop5,
+        ardatestop5,
+        artimestop5,
+        dpdatestop5,
+        dptimestop5,
+        last,
+        ardatelast,
+        artimelast,
+        dpdatelast,
+        dptimelast
       );
-      const response = Bus.validateTrip(trip);
+      const response = trip.validate();
       if (!response.error) {
         Bus.addTrip(busno, trip)
           .then(() => {
-            res.render('../views/admin/addBus.ejs', {
-              title: 'Add Bus',
-              loggedIn: true,
-              role: 'admin',
-              successMsg: true,
-            });
+            res.send('success');
+            // res.render('../views/admin/addBus.ejs', {
+            //   title: 'Add Bus',
+            //   loggedIn: true,
+            //   role: 'admin',
+            //   successMsg: true,
+            // });
           })
           .catch((err) => {
             console.log(`admin post_addTrip error: ${err}`);

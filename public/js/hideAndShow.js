@@ -14,5 +14,7 @@ function hide(id) {
   } else if ([...elem.classList].includes('inline')) {
     elem.classList.remove('inline');
     elem.classList.add('hidden');
+  } else {
+    elem.classList.add('hidden');
   }
 }

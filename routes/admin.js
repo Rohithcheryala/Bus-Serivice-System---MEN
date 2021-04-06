@@ -6,11 +6,17 @@ const controller = require('../controllers/admin.js');
 
 router.get('/', controller.get_index);
 
+router.get('/search', controller.get_search);
+
 router.get('/activities', controller.get_activities);
 
 router
   .get('/addAdmin', controller.get_addAdmin)
   .post('/addAdmin', controller.post_addAdmin);
+
+router
+  .get('/addRoute', controller.get_addRoute)
+  .post('/addRoute', controller.post_addRoute);
 
 router
   .get('/addBus', controller.get_addBus)

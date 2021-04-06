@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/tailwind.css">
+    <title><%= title %></title>
+    <script src="/js/toggleClasses.js"></script>
+    <script src="/js/hideAndShow.js"></script>
+  </head>
+
+  <body class="font-mono">
+    <%- include('../partials/navbar.ejs') %>
+    <form action="/admin/addRoute" method="POST" class="w-1/2 mx-auto mt-20 border-2 border-red-500">
+      <div>
+
+      </div>
+      <div class="grid grid-cols-2 p-6 gap-y-2">
+        <label for="name" class="my-auto text-center">Name</label>
+        <input type="text" name="name" id="name">
+        <label for="from" class="my-auto text-center">From</label>
+        <input type="text" name="from" id="from">
+        <label for="stop1" class="my-auto text-center">Stop 1</label>
+        <input type="text" name="stop1" id="stop1">
+        <label for="stop2" class="my-auto text-center">Stop 2</label>
+        <input type="text" name="stop2" id="stop2">
+        <label for="stop3" class="my-auto text-center">Stop 3</label>
+        <input type="text" name="stop3" id="stop3">
+        <label for="stop4" class="my-auto text-center">Stop 4</label>
+        <input type="text" name="stop4" id="stop4">
+        <label for="stop5" class="my-auto text-center">Stop 5</label>
+        <input type="text" name="stop5" id="stop5">
+        <label for="to" class="my-auto text-center">To</label>
+        <input type="text" name="to" id="to">
+        <button type="submit" class="py-2 bg-green-500 rounded hover:bg-green-600 col-span-full">GO</button>
+      </div>
+    </form>
+    <script>
+      function func(thiss, id, disp) {
+        let elem = document.getElementById(thiss);
+        if (!elem.value) {
+          let target = document.getElementById(id);
+          if (!target) {
+            return;
+          }
+          if (target.value) {
+            elem.value = target.value;
+            target.value = '';
+            func(id, 'stop' + ((+id.slice(-1)) + 1), disp);
+          }
+          if (!elem.value && !target.value) {
+            hide(id);
+          }
+        } else {
+          show(id, disp);
+        }
+        return true
+      }
+
+      function fillValue(host, target) {
+        document.getElementById(target).value = document.getElementById(host).value;
+      }
+
+    </script>
+
+    <%- include('../partials/fontawesome.ejs') %>
+
+  </body>
