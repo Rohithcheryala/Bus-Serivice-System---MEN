@@ -6,7 +6,9 @@ const controller = require('../controllers/admin.js');
 
 router.get('/', controller.get_index);
 
-router.get('/search', controller.get_search);
+router
+  .get('/search', controller.get_search)
+  .post('/search', controller.post_search);
 
 router.get('/activities', controller.get_activities);
 

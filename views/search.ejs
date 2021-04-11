@@ -12,7 +12,7 @@
 
   <body class="font-mono">
     <%- include('./partials/navbar.ejs') %>
-    <form action="/<%= role %>/search" method="POST"
+    <form action="/<%= role %>/search" method="GET"
       class="grid w-auto grid-flow-row grid-cols-1 mx-2 border-2 border-blue-600 md:mx-auto md:w-1/2 mt-14">
       <div class="grid grid-flow-col grid-cols-1 grid-rows-4 sm:grid-rows-2 sm:grid-cols-2 gap-x-10">
         <label for="fromplace" class="p-2">From</label>
@@ -25,5 +25,37 @@
       <button type="submit"
         class="px-4 py-2 mt-4 mb-2 ml-auto mr-2 bg-green-300 rounded hover:bg-green-500 max-w-max">Search</button>
     </form>
+    <% if (locals.results) { %>
+    <table class="mt-4">
+      <thead class="border-2">
+        <tr>
+          <th class="border-2 border-red-500">Bus Number</th>
+          <th class="border-2 border-red-500">From</th>
+          <th class="border-2 border-red-500">To</th>
+          <th class="border-2 border-red-500"></th>
+        </tr>
+      </thead>
+      <tbody class="border-2">
+        <% results.forEach(aResult=>{%>
+        <tr>
+          <td class="border-2 border-red-500"><%= aResult.busNo %> </td>
+          <td class="border-2 border-red-500">
+            <div><%= aResult.from.date %> </div>
+            <div><%= aResult.from.time %> </div>
+          </td>
+          <td class="border-2 border-red-500">
+            <div><%= aResult.to.date %> </div>
+            <div><%= aResult.to.time %> </div>
+          </td>
+          <td class="border-2 border-red-500">
+            <!-- <button class="p-2 mx-1 bg-green-400 rounded hover:bg-green-500">Book</button> -->
+            <a href="/<%= role %>/book/<%= aResult.busNo %>/<%= aResult._id %><% if (locals.query) { %><%= query %><% } %>"
+              class="p-2 mx-1 bg-green-400 rounded hover:bg-green-500">Book</a>
+          </td>
+        </tr>
+        <%}) %>
+      </tbody>
+    </table>
+    <% } %>
     <%- include('./partials/fontawesome.ejs') %>
   </body>

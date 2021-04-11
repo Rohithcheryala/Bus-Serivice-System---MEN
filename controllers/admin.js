@@ -13,9 +13,35 @@ exports.get_index = (req, res, next) => {
 exports.get_search = (req, res, next) => {
   res.render('../views/search.ejs', {
     title: 'search page',
-    role: 'user',
+    role: 'admin',
     loggedIn: true,
   });
+};
+
+exports.post_search = (req, res, next) => {
+  const { fromplace, toplace, fromdate } = req.body;
+  Bus.fetchTrips(
+    // $and: [
+    //   { 'Stops.name': fromplace },
+    //   { 'Stops.arrival.date': fromdate },
+    //   { 'Stops.name': toplace },
+    // ],
+    fromplace,
+    fromdate,
+    toplace
+  )
+    .then((results) => {
+      res.render('../views/search.ejs', {
+        title: 'Admin search',
+        role: 'admin',
+        loggedIn: true,
+        results: results,
+      });
+      // res.json(results);
+    })
+    .catch((err) => {
+      console.log(`Admin post_search error: ${err}`);
+    });
 };
 
 exports.get_activities = (req, res, next) => {
@@ -163,6 +189,12 @@ exports.post_addBus = (req, res, next) => {
     if (!bool) {
       res.send('errrrrrrr');
     } else {
+      // add this busno to busNumbers collection
+      Bus.addThisBusNumber(busno)
+        .then(() => {})
+        .catch((err) => {
+          console.log(`admin addingBusNo error: ${err}`);
+        });
       let trip = new Trip(
         route,
         fromplace,

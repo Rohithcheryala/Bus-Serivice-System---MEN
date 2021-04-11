@@ -12,22 +12,31 @@
 
   <body class="font-mono">
     <%- include('./partials/navbar.ejs') %>
-    <form action="<%= role %>/book" method="POST" class="flex">
+    <form action="/<%= role %>/confirmTransaction" method="POST" class="flex">
       <div class="grid w-full grid-cols-4 mx-auto my-12 shadow-2xl sm:w-1/2 justify-items-center">
         <% for( let seatno = 1; seatno <= 40; seatno++ ) { %>
         <!-- if seat is booked add disabled tag to input field -->
         <!-- and cursor-not-allowed class to label -->
-        <label for="<%= seatno %>" id='<%= seatno %>s'
-          class="relative block w-8 h-8 my-2 bg-purple-600 rounded-md cursor-pointer"
-          onclick="toggleClassesOf('<%= seatno %>s',['bg-purple-600','bg-green-600'])">
+        <label for="<%= seatno %>" id='<%= seatno %>s' class="relative block w-8 h-8 my-2 rounded-md <% if (data.status[seatno-1]==='f') { %>
+          cursor-not-allowed bg-red-500 <% } else { %> cursor-pointer bg-purple-600 <%} %>"
+          <% if (data.status[seatno-1] !== 'f') { %>
+          onclick="toggleClassesOf('<%= seatno %>s',['bg-purple-600','bg-green-600'])" <% } %> data-none="">
           <span class="absolute block transform -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2"><%= seatno %></span>
         </label>
-        <input type="checkbox" name="1" id="1" class="hidden">
+        <input type="checkbox" <% if (data.status[seatno-1]==='f') { %>disabled<% } %> name="<%= seatno %>"
+          id="<%= seatno %>" class="hidden">
         <% } %>
         <div class="col-span-full justify-self-end">
           <button class="p-2 m-2 ease-in-out transform bg-green-400 rounded-md hover:scale-110">Book</button>
         </div>
       </div>
     </form>
+    <!-- <script>
+      for (let i = 1; i <= 40; i++) {
+        if (document.getElementById(i).checked) {
+          toggleClassesOf(`${i}s`, ['bg-purple-600', 'bg-green-600'])
+        }
+      }
+    </script> -->
     <%- include('./partials/fontawesome.ejs') %>
   </body>
